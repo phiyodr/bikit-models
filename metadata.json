@@ -1,0 +1,113 @@
+{
+    "CODEBRIM_EfficientNetV1B0":
+    {
+        "pth_name": "CODEBRIM_EfficientNetV1B0.pth",
+        "training_dataset": "codebrim-classif-balanced",
+        "finetuning_approach": "DHB",
+        "id2labels":
+        {
+            "0": "Background",
+            "1": "Crack",
+            "2": "Spalling",
+            "3": "Efflorescence",
+            "4": "ExposedReBar",
+            "5": "CorrosionStain"
+        }
+    },
+    "CODEBRIM_MobileNetV2":
+    {
+        "pth_name": "CODEBRIM_MobileNetV2.pth",
+        "training_dataset": "codebrim-classif-balanced",
+        "finetuning_approach": "???",
+        "id2labels":
+        {
+            "0": "Background",
+            "1": "Crack",
+            "2": "Spalling",
+            "3": "Efflorescence",
+            "4": "ExposedBars",
+            "5": "CorrosionStain"
+        }
+    },
+    "CODEBRIM_MobileNetV3Large":
+    {
+        "pth_name": "CODEBRIM_MobileNetV3Large.pth",
+        "training_dataset": "codebrim-classif-balanced",
+        "finetuning_approach": "HTA",
+        "id2labels":
+        {
+            "0": "Background",
+            "1": "Crack",
+            "2": "Spalling",
+            "3": "Efflorescence",
+            "4": "ExposedBars",
+            "5": "CorrosionStain"
+        }
+    },
+    "CODEBRIM_ResNet50":
+    {
+        "pth_name": "CODEBRIM_ResNet50.pth",
+        "training_dataset": "codebrim-classif-balanced",
+        "finetuning_approach": "HTA",
+        "id2labels":
+        {
+            "0": "Background",
+            "1": "Crack",
+            "2": "Spalling",
+            "3": "Efflorescence",
+            "4": "ExposedBars",
+            "5": "CorrosionStain"
+        }
+    },
+    "MCDS_EfficientNetV1B0":
+    {
+        "pth_name": "MCDS_EfficientNetV1B0.pth",
+        "training_dataset": "mcds_bikit",
+        "finetuning_approach": "DHB",
+        "mcds_Bikit":
+        {
+            "0": "Crack",
+            "1": "Efflorescence",
+            "2": "ExposedReinforcement",
+            "3": "General",
+            "4": "NoDefect",
+            "5": "RustStaining",
+            "6": "Scaling",
+            "7": "Spalling"
+        }
+    },
+    "MCDS_ResNet50":
+    {
+        "pth_name": "MCDS_ResNet50.pth",
+        "training_dataset": "mcds_bikit",
+        "finetuning_approach": "DHB",
+        "mcds_Bikit":
+        {
+            "0": "Crack",
+            "1": "Efflorescence",
+            "2": "ExposedReinforcement",
+            "3": "General",
+            "4": "NoDefect",
+            "5": "RustStaining",
+            "6": "Scaling",
+            "7": "Spalling"
+        }
+    },
+    "MCDS_MobileNetV3Large":
+    {
+        "pth_name": "MCDS_MobileNetV3Large.pth",
+        "training_dataset": "mcds_bikit",
+        "finetuning_approach": "HTA",
+        "mcds_Bikit":
+        {
+            "0": "Crack",
+            "1": "Efflorescence",
+            "2": "ExposedReinforcement",
+            "3": "General",
+            "4": "NoDefect",
+            "5": "RustStaining",
+            "6": "Scaling",
+            "7": "Spalling"
+        }
+    }
+}
