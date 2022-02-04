@@ -64,7 +64,7 @@
         "pth_name": "MCDS_EfficientNetV1B0.pth",
         "training_dataset": "mcds_bikit",
         "finetuning_approach": "DHB",
-        "mcds_Bikit":
+        "id2labels":
         {
             "0": "Crack",
             "1": "Efflorescence",
@@ -81,7 +81,7 @@
         "pth_name": "MCDS_ResNet50.pth",
         "training_dataset": "mcds_bikit",
         "finetuning_approach": "DHB",
-        "mcds_Bikit":
+        "id2labels":
         {
             "0": "Crack",
             "1": "Efflorescence",
@@ -98,7 +98,7 @@
         "pth_name": "MCDS_MobileNetV3Large.pth",
         "training_dataset": "mcds_bikit",
         "finetuning_approach": "HTA",
-        "mcds_Bikit":
+        "id2labels":
         {
             "0": "Crack",
             "1": "Efflorescence",
