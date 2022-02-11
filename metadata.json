@@ -1,7 +1,7 @@
 {
-    "CODEBRIM_EfficientNetV1B0":
+    "CODEBRIMbalanced_EfficientNetV1B0_dhb":
     {
-        "pth_name": "CODEBRIM_EfficientNetV1B0.pth",
+        "pth_name": "CODEBRIMbalanced_EfficientNetV1B0_dhb.pth",
         "training_dataset": "codebrim-classif-balanced",
         "finetuning_approach": "DHB",
         "id2labels":
@@ -14,9 +14,9 @@
             "5": "CorrosionStain"
         }
     },
-    "CODEBRIM_MobileNetV2":
+    "CODEBRIMbalanced_MobileNetV2":
     {
-        "pth_name": "CODEBRIM_MobileNetV2.pth",
+        "pth_name": "CODEBRIMbalanced_MobileNetV2.pth",
         "training_dataset": "codebrim-classif-balanced",
         "finetuning_approach": "???",
         "id2labels":
@@ -29,9 +29,9 @@
             "5": "CorrosionStain"
         }
     },
-    "CODEBRIM_MobileNetV3Large":
+    "CODEBRIMbalanced_MobileNetV3Large_hta":
     {
-        "pth_name": "CODEBRIM_MobileNetV3Large.pth",
+        "pth_name": "CODEBRIMbalanced_MobileNetV3Large_hta.pth",
         "training_dataset": "codebrim-classif-balanced",
         "finetuning_approach": "HTA",
         "id2labels":
@@ -44,9 +44,9 @@
             "5": "CorrosionStain"
         }
     },
-    "CODEBRIM_ResNet50":
+    "CODEBRIMbalanced_ResNet50_hta":
     {
-        "pth_name": "CODEBRIM_ResNet50.pth",
+        "pth_name": "CODEBRIMbalanced_ResNet50_hta.pth",
         "training_dataset": "codebrim-classif-balanced",
         "finetuning_approach": "HTA",
         "id2labels":
@@ -59,9 +59,9 @@
             "5": "CorrosionStain"
         }
     },
-    "MCDS_EfficientNetV1B0":
+    "MCDSbikit_EfficientNetV1B0_dhb":
     {
-        "pth_name": "MCDS_EfficientNetV1B0.pth",
+        "pth_name": "MCDSbikit_EfficientNetV1B0_dhb.pth",
         "training_dataset": "mcds_bikit",
         "finetuning_approach": "DHB",
         "id2labels":
@@ -76,9 +76,9 @@
             "7": "Spalling"
         }
     },
-    "MCDS_ResNet50":
+    "MCDSbikit_ResNet50_dhb":
     {
-        "pth_name": "MCDS_ResNet50.pth",
+        "pth_name": "MCDSbikit_ResNet50_dhb.pth",
         "training_dataset": "mcds_bikit",
         "finetuning_approach": "DHB",
         "id2labels":
@@ -93,9 +93,9 @@
             "7": "Spalling"
         }
     },
-    "MCDS_MobileNetV3Large":
+    "MCDSbikit_MobileNetV3Large_hta":
     {
-        "pth_name": "MCDS_MobileNetV3Large.pth",
+        "pth_name": "MCDSbikit_MobileNetV3Large_hta.pth",
         "training_dataset": "mcds_bikit",
         "finetuning_approach": "HTA",
         "id2labels":
@@ -109,5 +109,95 @@
             "6": "Scaling",
             "7": "Spalling"
         }
-    }
+    },
+    "META4_MobileNetV3Large_dhb":
+    {
+        "pth_name": "META4_MobileNetV3Large_dhb.pth",
+        "training_dataset": "meta4",
+        "finetuning_approach": "DHB",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4_MobileNetV3Large_ho":
+    {
+        "pth_name": "META4_MobileNetV3Large_ho.pth",
+        "training_dataset": "meta4",
+        "finetuning_approach": "HO",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4_MobileNetV3Large_hta":
+    {
+        "pth_name": "META4_MobileNetV3Large_hta.pth",
+        "training_dataset": "meta4",
+        "finetuning_approach": "HTA",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4_ResNet50_dhb":
+    {
+        "pth_name": "META4_ResNet50_dhb.pth",
+        "training_dataset": "meta4",
+        "finetuning_approach": "DHB",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4_ResNet50_ho":
+    {
+        "pth_name": "META4_ResNet50_ho.pth",
+        "training_dataset": "meta4",
+        "finetuning_approach": "HO",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4_ResNet50_hta":
+    {
+        "pth_name": "META4_ResNet50_hta.pth",
+        "training_dataset": "meta4",
+        "finetuning_approach": "HTA",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    }     
 }
