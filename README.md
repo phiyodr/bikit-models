@@ -30,7 +30,7 @@ prob, pred = make_prediction(model, img, metadata, print_predictions=True, prepr
 
 ## `meta4`
 
-These are the temorary results on test data of meta4 dataset:
+These are the results on test data of meta4 dataset:
 
 | new_cp | origin_cp | Dataset | Split | Approach | Base      | ExactMatchRatio | F1    | Precision | Recall | Accuracy | AUROC | Recall-NoDamage | Recall-Crack | Recall-Efflorescence | Recall-Spalling | Recall-BarsExposed | Recall-Rust |
 |--------------------------------|---------------------|---------|-------|----------|-----------|-----------------|-------|-----------|--------|----------|-------|-----------------|--------------|----------------------|-----------------|--------------------|-------------|

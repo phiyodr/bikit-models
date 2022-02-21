@@ -1,7 +1,0 @@
-cp,Dataset,Split,Approach,Base,ExactMatchRatio,F1,Precision,Recall,Accuracy,AUROC,Recall-NoDamage,Recall-Crack,Recall-Efflorescence,Recall-Spalling,Recall-BarsExposed,Recall-Rust
-comic-bee-1,meta4,test,ho,mobilenet,65.34,69.96,82.19,66.23,88.96,94.45,98.68,36.41,54.19,76.67,60.95,70.48
-hearty-elevator-18,meta4,test,hta,mobilenet,77.84,79.40,87.68,74.85,93.01,97.69,99.17,60.82,67.60,81.48,69.52,70.48
-frosty-wood-6,meta4,test,ho,resnet,63.71,61.31,78.51,55.55,88.36,93.26,97.32,36.01,31.28,59.63,51.90,57.14
-daily-dream-16,meta4,test,dha,mobilenet,79.28,79.96,86.13,76.78,93.46,97.63,98.83,64.79,69.27,81.11,66.19,80.48
-golden-spaceship-32,meta4,test,hta,resnet,79.72,79.22,85.65,75.55,93.57,97.67,98.68,65.28,70.39,77.04,66.67,75.24
-olive-snow-29,meta4,test,dha,resnet,80.23,79.55,85.78,76.09,93.81,97.48,98.77,66.61,67.04,85.56,73.33,65.24
