@@ -389,10 +389,10 @@
             "5": "Rust"
         }
     },
-    
-    "DACL1K_INpretr_MobileNetV3Lare_hta":
+
+    "DACL1K_MobileNetV3Large_hta":
     {
-        "pth_name": "DACL1K_INpretr_MobileNetV3Lare_hta.pth",
+        "pth_name": "DACL1K_MobileNetV3Large_hta.pth",
         "training_dataset": "dacl1k",
         "finetuning_approach": "HTA",
         "id2labels":
@@ -405,11 +405,12 @@
             "5": "Rust"
         }
     },
-    "DACL1K_scratch_MobileNetV3Lare_hta":
+
+    "DACL1K_MobileNetV3Large_INpretr":
     {
-        "pth_name": "DACL1K_scratch_MobileNetV3Lare_hta.pth",
+        "pth_name": "DACL1K_INpretr_MobileNetV3Large.pth",
         "training_dataset": "dacl1k",
-        "finetuning_approach": "HTA",
+        "finetuning_approach": "INpretr",
         "id2labels":
         {
             "0": "NoDamage",
@@ -420,9 +421,24 @@
             "5": "Rust"
         }
     },
-    "META4+DACL1K_INpretr_MobileNetV3Lare_hta":
+    "DACL1K_MobileNetV3Large_scratch":
     {
-        "pth_name": "META4+DACL1K_INpretr_MobileNetV3Lare_hta.pth",
+        "pth_name": "DACL1K_MobileNetV3Large_scratch.pth",
+        "training_dataset": "dacl1k",
+        "finetuning_approach": "scratch",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4+DACL1K_MobileNetV3Large_hta":
+    {
+        "pth_name": "META4+DACL1K_MobileNetV3Large_hta.pth",
         "training_dataset": "meta4+dacl1k",
         "finetuning_approach": "HTA",
         "id2labels":
@@ -435,11 +451,26 @@
             "5": "Rust"
         }
     },
-    "META4+DACL1K_scratch_MobileNetV3Lare_hta":
+    "META4+DACL1K_MobileNetV3Large_INpretr":
     {
-        "pth_name": "META4+DACL1K_scratch_MobileNetV3Lare_hta.pth",
+        "pth_name": "META4+DACL1K_MobileNetV3Large_INpretr.pth",
         "training_dataset": "meta4+dacl1k",
-        "finetuning_approach": "HTA",
+        "finetuning_approach": "INpretr",
+        "id2labels":
+        {
+            "0": "NoDamage",
+            "1": "Crack",
+            "2": "Efflorescence",
+            "3": "Spalling",
+            "4": "BarsExposed",
+            "5": "Rust"
+        }
+    },
+    "META4+DACL1K_MobileNetV3Lare_scratch":
+    {
+        "pth_name": "META4+DACL1K_MobileNetV3Large_scratch.pth",
+        "training_dataset": "meta4+dacl1k",
+        "finetuning_approach": "scratch",
         "id2labels":
         {
             "0": "NoDamage",
