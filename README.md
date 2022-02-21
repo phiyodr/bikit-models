@@ -1,7 +1,7 @@
 # bikit-models
 
 
-Please visit [Building Inspection Toolkit](https://github.com/phiyodr/building-inspection-toolkit/) for all details who to use these models 
+Please visit [Building Inspection Toolkit](https://github.com/phiyodr/building-inspection-toolkit/) for all details on how to use these models 
 
 ```python
 from bikit.utils import load_model, load_img_from_url
