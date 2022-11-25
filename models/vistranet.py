@@ -3,13 +3,12 @@ All by Sofia who submitted via https://dacl.ai/.
 https://github.com/mpaques269546/codebrim_challenge
 """
 
-
-import math
-
 import os
+import math
+import sys
+
 import torch
 import torch.nn as nn
-import sys
 
 
 ####### Decoder:
@@ -270,7 +269,7 @@ class VisionTransformer(nn.Module):
 
 
 ####### Build the model:
-def load_pretrained_weights(model, pretrained_weights, checkpoint_key, model_name):
+def build_from_cp(model, pretrained_weights, checkpoint_key, model_name):
     
     if os.path.isfile(pretrained_weights):
         state_dict = torch.load(pretrained_weights, map_location="cpu")
@@ -336,7 +335,7 @@ def build_encoder( pretrained_weights='', key='',  arch=None, patch_size=8 , avg
 
     # load weights to evaluate
     if len(key)>0 and model!=None and len(pretrained_weights)>0:
-        load_pretrained_weights(model, pretrained_weights, key, arch)
+        build_from_cp(model, pretrained_weights, key, arch)
         print('pretrained weights loaded')
 
     # params
@@ -364,7 +363,7 @@ def build_decoder(pretrained_weights, key,   num_cls=2, embed_dim=384*4, image_s
     # load weights to evaluate
     if len(key)>0 and model!=None and len(pretrained_weights)>0:
         arch=""
-        load_pretrained_weights(model, pretrained_weights, key, arch)
+        build_from_cp(model, pretrained_weights, key, arch)
         print('pretrained weights loaded')
 
     # params
@@ -429,11 +428,11 @@ class Ensemble(nn.Module):
 
 
 
-def build_model(pretrained_weights, img_size=224, num_cls=6, quantized=False):
+def build_vistra(cp, img_size=224, num_cls=6, quantized=True):
     if quantized:
         weights_encoder_decoder = ''
     else:
-        weights_encoder_decoder = pretrained_weights
+        weights_encoder_decoder = cp
 
     encoder = build_encoder(weights_encoder_decoder, arch='vit_small',  key='encoder', image_size=img_size)
     n_last_blocks = 4
@@ -441,18 +440,22 @@ def build_model(pretrained_weights, img_size=224, num_cls=6, quantized=False):
     embed_dim = encoder.embed_dim * (n_last_blocks + int(avgpool_patchtokens))
 
     decoder = build_decoder(weights_encoder_decoder, key='decoder', num_cls=num_cls, 
-                            embed_dim=embed_dim, image_size=img_size, activation=nn.Sigmoid())
+                            embed_dim=embed_dim, image_size=img_size, activation=nn.Sigmoid()) 
 
     model = Ensemble(encoder, decoder,n_last_blocks= n_last_blocks, avgpool_patchtokens=avgpool_patchtokens)
    
     if quantized:
         print('quantization')
         model = torch.quantization.quantize_dynamic(model, {torch.nn.Linear, torch.nn.Conv2d, 
-                                                          torch.nn.Dropout, torch.nn.GELU,
-                                                          torch.nn.ReLU, torch.nn.LayerNorm}, 
-                                                  dtype=torch.qint8)
-        state_dict = torch.load(pretrained_weights, map_location="cpu")
+                                                            torch.nn.Dropout, torch.nn.GELU,
+                                                            torch.nn.ReLU, torch.nn.LayerNorm}, 
+                                                            dtype=torch.qint8)
+        state_dict = torch.load(cp, map_location="cpu")
         #print('state dict:', state_dict.keys())
         msg = model.load_state_dict(state_dict, strict=False)
-        print('Pretrained weights found at {} and loaded with msg: {}'.format(pretrained_weights, msg))
+        print('Pretrained weights found at {} and loaded with msg: {}'.format(cp, msg))
     return model
+
+
+if __name__ == '__main__':
+    model = build_vistra(cp= 'checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')

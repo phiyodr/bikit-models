@@ -1,14 +1,17 @@
 '''
 Utils to make prediction with models
 '''
+import os
 
-import numpy as np
-import torch
 from PIL import Image
 import matplotlib.pyplot as plt
 
+import numpy as np
+import torch
+from torchvision import transforms
+
 # Preprocessing-functions:
-def process_img(img_path=None):
+def process_img_daclnet(img_path=None):
 	''' 
 	Scales, crops, and normalizes a PIL image for a PyTorch model,
 	returns a Torch Tensor
@@ -52,6 +55,28 @@ def process_img(img_path=None):
 		image = image.type(torch.FloatTensor)
 		return image
 
+def process_img_vistranet(img_path):
+	''' 
+	Function for preprocessing images according to Sofia who submitted via https://dacl.ai/.
+	All from: https://github.com/mpaques269546/codebrim_challenge.
+  	Args:
+  		img_path:	string, path to image you want to classify. 
+  		show_img:	display image
+  	Returns:
+  		img: 		image as torch.Tensor of shape: [1, 3, 224, 224]
+  	'''
+	transform = transforms.Compose([
+        transforms.Resize(256, interpolation=3),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+    ])
+	if os.path.isfile(img_path):
+		with open(img_path, 'rb') as f:
+			img = Image.open(f)
+			img = img.convert('RGB')
+	img = transform(img)
+	return img.unsqueeze(0)
 
 def view_classify(img_path, result_dict):
 	''' 
@@ -90,32 +115,39 @@ def view_classify(img_path, result_dict):
 
 
 if __name__ == '__main__':
-    '''
-    Quick test
-    '''
-    from vistranet import build_model
-    from daclnet import DaclNet
+	'''
+	Quick test
+	'''
+	from vistranet import build_model
+	from daclnet import DaclNet
 
-    img_proc = process_img('assets\ExImg.jpg')
+	img_path = 'assets\image_0000761_crop_0000006.png'
+	img_proc = process_img_vistranet(img_path)
 
     # Instantiate the model:
-    # model = build_model(pretrained_weights='models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth', img_size=224, num_cls=6, quantized=True)
+	model = build_model(pretrained_weights='models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth', img_size=224, num_cls=6, quantized=True)
     # Load the checkpoint:
     
     # Choose which checkpoint/model you want to load from the table above:
-    cp_name = 'models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ResNet50_hta.pth'
-    cp = torch.load(cp_name)
-    model = DaclNet(base_name=cp['base'], resolution = cp['resolution'], hidden_layers=cp['hidden_layers'], 
-				num_class=cp['num_class'])
-    model.load_state_dict(cp['state_dict']) # Load the pre-trained weights into the model
-
-    model.eval()
-    with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
-        logits = model(img_proc)
-        preds = torch.sigmoid(logits).float().squeeze(0) # Nur bei DaclNet notwendig 
-    
-    print(preds)
-        # logits = logits.flatten()
+	cp_name = 'models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ResNet50_hta.pth'
+	cp = torch.load(cp_name)
+    # model = DaclNet(base_name=cp['base'], resolution = cp['resolution'], hidden_layers=cp['hidden_layers'], 
+	# 			num_class=cp['num_class'])
+    # model.load_state_dict(cp['state_dict']) # Load the pre-trained weights into the model
+	
+	model.eval()
+	with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
+		preds = model(img_proc)
+		# preds = torch.sigmoid(logits).float().squeeze(0) # Nur bei DaclNet notwendig
+	
+	# Make a dict with the predictions:
+	cat_to_name = {0:'NoDamage', 1: 'Crack', 2:'Spalling', 3:'Efflorescence', 4:'BarsExposed', 5:'Rust'}
+	preds = preds.flatten()
+	preds_dict = {v:round(preds[int(k)].item(),3) for k,v in cat_to_name.items()}
+	print(preds_dict)
+    # View the classified image and it's predictions:
+	# view_classify(img_path, preds_dict)
+	# logits = logits.flatten()
     # Apply sigmoid activation to get predictions:
     # preds = torch.sigmoid(logits).float().squeeze(0).to('cpu')
     

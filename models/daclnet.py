@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from torchvision import models
 
@@ -10,7 +11,7 @@ efnet_dict = {'b0': 224, 'b1': 240, 'b2': 260, 'b3': 300,
              }
 
 class DaclNet(nn.Module):
-    def __init__(self, base_name, resolution, hidden_layers, num_class, drop_prob=0.2, freeze_base=True):
+    def __init__(self, base_name, resolution, hidden_layers, num_class, drop_prob=0.2, imgnet_pt = False, freeze_base=True):
         ''' 
         Builds a network separated into a base model and classifier with arbitrary hidden layers.
         
@@ -40,7 +41,7 @@ class DaclNet(nn.Module):
         self.freeze_base = freeze_base
 
         if self.base_name == 'mobilenet':
-            base = models.mobilenet_v3_large(pretrained=True) 
+            base = models.mobilenet_v3_large(pretrained=imgnet_pt) 
             modules = list(base.children())[:-1] 
             self.base = nn.Sequential(*modules)
             # for pytorch model:
@@ -48,11 +49,10 @@ class DaclNet(nn.Module):
                 self.classifier = nn.ModuleList([nn.Linear(base.classifier[0].in_features, self.hidden_layers[0])]) 
             else:
                 self.classifier = nn.Linear(base.classifier[0].in_features, num_class)
-
             self.activation = nn.Hardswish()
 
         elif self.base_name == 'resnet':
-            base = models.resnet50(pretrained=True) 
+            base = models.resnet50(pretrained=imgnet_pt) 
             modules = list(base.children())[:-1]
             self.base = nn.Sequential(*modules)
             if self.hidden_layers:
@@ -62,6 +62,8 @@ class DaclNet(nn.Module):
             self.activation = nn.ELU() 
 
         elif self.base_name == 'efficientnet':      
+            if imgnet_pt:
+                print('You try to use efficientnet without pretrained weights from ImageNet. This is not implemented. Weights from ImageNet will be loaded anyway, sry!')
             for ver in efnet_dict:
                 if efnet_dict[ver] == self.resolution:
                     self.version = ver
@@ -93,7 +95,7 @@ class DaclNet(nn.Module):
         self.dropout = nn.Dropout(p=drop_prob, inplace=True)
 
         # classifier
-        # Add a variable number of more hidden layers
+        # Add a variable number of hidden layers
         if self.hidden_layers:
             layer_sizes = zip(self.hidden_layers[:-1], self.hidden_layers[1:])        
             self.classifier.extend([nn.Linear(h1, h2) for h1, h2 in layer_sizes])
@@ -152,3 +154,44 @@ class DaclNet(nn.Module):
             logits = self.classifier(x)
 
         return logits
+
+
+def build_dacl(device='cpu', freeze_base=True, **kwargs):
+    # cp=None, drop_prob=None, base=None, resolution=None, hidden_layers=None, num_class=None, freeze=True
+    '''
+	This function builds a model, if given, from a checkpoint.
+	Args: 
+        device: str, choose which device you want to use ('cpu' or 'cuda')
+        freeze_base: bool, freeze weights of the model's base
+    Keyword Args:
+        cp (str): path to a pytorch checkpoint which has to originate from a dacl model
+        base (str): name of the base. Select from ['resnet', 'mobilenet', 'efficientnet', 'mobilenetv2'] 
+        resolution (str): description
+        hidden_layers (list of int): e.g. [512, 256, 128]
+        num_class (int): number of classes to predict	
+        drop_prob (float): dropout probability applied for each hidden layer
+        imgnet_pt (bool): Load pretrained weights from ImageNet
+	'''
+    if 'cp' in kwargs:
+        cp = torch.load(kwargs['cp'], map_location=torch.device(device)) 
+        model = DaclNet(cp['base'], cp['resolution'], cp['hidden_layers'],
+                        cp['num_class'], cp['drop_prob'], freeze_base)
+        model.load_state_dict(cp['state_dict'])
+        model_summary = 'The model was instantiated from a checkpoint with the following arguments:\n'
+        for key, value in cp.items():
+            if key != 'state_dict':
+                model_summary += f"{key}: {value}\n"
+        model_summary += 'The base is frozen: {}\n'.format(freeze_base)  
+    else:
+        model = DaclNet(kwargs['base'], kwargs['resolution'], kwargs['hidden_layers'], kwargs['num_class'], kwargs['drop_prob'],  kwargs['imgnet_pt'], freeze_base=freeze_base) 
+        model_summary = 'The model was instantiated from scratch with the following arguments:\n'
+        model_summary += 'The base is frozen {}\n'.format(freeze_base)  
+        for key, value in kwargs.items():
+            model_summary += f"{key}: {value}"
+    print('=====Model summary=====')
+    print(model_summary)
+    return model
+
+
+if __name__ == '__main__':
+    model = build_dacl(cp = './checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_MobileNetV3-Large_hta.pth')
