@@ -1,4 +1,9 @@
 # MyIgnores
+.ipynb_checkpoints
+__pycache__
+*.vscode
+
 *.ods
+/input/*
 /models/depr/*
 models/BikitModels.tar.xz

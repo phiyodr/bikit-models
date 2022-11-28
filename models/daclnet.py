@@ -194,4 +194,4 @@ def build_dacl(device='cpu', freeze_base=True, **kwargs):
 
 if __name__ == '__main__':
     # Quick check
-    model = build_dacl(cp_path = './checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_MobileNetV3-Large_hta.pth')
+    model = build_dacl(cp_path = 'models\checkpoints\codebrim-classif\codebrim-classif_MobileNetV3-Large_hta.pth')

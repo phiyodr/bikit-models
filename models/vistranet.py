@@ -468,20 +468,21 @@ def build_vistra(cp_path, img_size=224, num_cls=6, quantized=True, activation=No
 
 if __name__ == '__main__':
     # Quick check
-    model = build_vistra(cp_path= 'checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')
+    model = build_vistra(cp_path= '.\models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')
 
 
     # cp_path = 'checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth'
-    # cp = {}
-    # cp['state_dict'] = torch.load(cp_path, map_location="cpu")
-    # cp['dateset'] = 'codebrim-classif-balanced'
-    # cp['img_size'] = 224
-    # cp['num_class'] = 6
-    # cp['cat_to_name'] = {0:'NoDamage', 1: 'Crack', 2:'Spalling', 3:'Efflorescence', 4:'BarsExposed', 5:'Rust'}
+    # # cp = {}
+    # cp = torch.load(cp_path, map_location="cpu")
+    # del cp['dateset']
+    # cp['dataset'] = 'codebrim-classif-balanced'
+    # # cp['img_size'] = 224
+    # # cp['num_class'] = 6
+    # # cp['cat_to_name'] = {0:'NoDamage', 1: 'Crack', 2:'Spalling', 3:'Efflorescence', 4:'BarsExposed', 5:'Rust'}
 
     # model_summary = 'The model was instantiated from {} with the following arguments:\n'.format(cp_path)
     # for key, value in cp.items():
     #     if key != 'state_dict':
     #         model_summary += f"{key}: {value}\n"
     # print(model_summary)
-    # torch.save(cp, ('codebrim-classif-balanced_ViT_s8_backup_manipulated.pth'))   
+    # torch.save(cp, ('codebrim-classif-balanced_ViT_s8_manipulated.pth'))   

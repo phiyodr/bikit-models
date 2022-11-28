@@ -5,6 +5,7 @@ import os
 
 from PIL import Image
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -125,7 +126,7 @@ if __name__ == '__main__':
 	img_proc = process_img_vistranet(img_path)
 
     # Instantiate the model:
-	model, cat_to_name = build_vistra(cp_path='checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_MobileNetV3-Large_hta.pth')
+	model, cat_to_name = build_vistra(cp_path='checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')
 
 	model.eval()
 	with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
@@ -133,8 +134,11 @@ if __name__ == '__main__':
 		preds = torch.sigmoid(logits).float().squeeze(0) 
 	
 	# Make a dict with the predictions:
-	preds = preds.flatten()
 	preds_dict = {v:round(preds[int(k)].item(),4) for k,v in cat_to_name.items()}
 	print(preds_dict)
     # View the classified image and it's predictions:
 	view_classify(img_path, preds_dict)
+
+	# model, cat_to_name = build_dacl(cp_path='models/input/codebrim-classif_MobileNetV3-Large_hta.pth')
+	# model_scripted = torch.jit.script(model)
+	# model_scripted.save('models\jit_models\codebrim-classif_MobileNetV3-Large_hta.pt')
