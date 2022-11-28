@@ -157,14 +157,13 @@ class DaclNet(nn.Module):
 
 
 def build_dacl(device='cpu', freeze_base=True, **kwargs):
-    # cp=None, drop_prob=None, base=None, resolution=None, hidden_layers=None, num_class=None, freeze=True
     '''
 	This function builds a model, if given, from a checkpoint.
 	Args: 
         device: str, choose which device you want to use ('cpu' or 'cuda')
         freeze_base: bool, freeze weights of the model's base
     Keyword Args:
-        cp (str): path to a pytorch checkpoint which has to originate from a dacl model
+        cp_path (str): path to a pytorch checkpoint which has to originate from a dacl model
         base (str): name of the base. Select from ['resnet', 'mobilenet', 'efficientnet', 'mobilenetv2'] 
         resolution (str): description
         hidden_layers (list of int): e.g. [512, 256, 128]
@@ -172,12 +171,12 @@ def build_dacl(device='cpu', freeze_base=True, **kwargs):
         drop_prob (float): dropout probability applied for each hidden layer
         imgnet_pt (bool): Load pretrained weights from ImageNet
 	'''
-    if 'cp' in kwargs:
-        cp = torch.load(kwargs['cp'], map_location=torch.device(device)) 
+    if 'cp_path' in kwargs:
+        cp = torch.load(kwargs['cp_path'], map_location=torch.device(device)) 
         model = DaclNet(cp['base'], cp['resolution'], cp['hidden_layers'],
                         cp['num_class'], cp['drop_prob'], freeze_base)
         model.load_state_dict(cp['state_dict'])
-        model_summary = 'The model was instantiated from a checkpoint with the following arguments:\n'
+        model_summary = 'The model was instantiated from {} with the following arguments:\n'.format(kwargs['cp_path'])
         for key, value in cp.items():
             if key != 'state_dict':
                 model_summary += f"{key}: {value}\n"
@@ -190,8 +189,9 @@ def build_dacl(device='cpu', freeze_base=True, **kwargs):
             model_summary += f"{key}: {value}"
     print('=====Model summary=====')
     print(model_summary)
-    return model
+    return model, cp['cat_to_name']
 
 
 if __name__ == '__main__':
-    model = build_dacl(cp = './checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_MobileNetV3-Large_hta.pth')
+    # Quick check
+    model = build_dacl(cp_path = './checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_MobileNetV3-Large_hta.pth')

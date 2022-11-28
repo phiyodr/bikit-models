@@ -18,7 +18,7 @@ def process_img_daclnet(img_path=None):
 	Args: 
 		img_path: 	string, filepath of the image
 	Example: 
-		process_img('test/1/image_06743.jpg')
+		process_img('assets/ExImg.jpg')
 	Returns: 
 		torch.float32 of shape: [1, 3, 224, 224]
 	'''
@@ -118,38 +118,23 @@ if __name__ == '__main__':
 	'''
 	Quick test
 	'''
-	from vistranet import build_model
-	from daclnet import DaclNet
+	from vistranet import build_vistra
+	from daclnet import build_dacl
 
-	img_path = 'assets\image_0000761_crop_0000006.png'
+	img_path = 'assets\image_0000468_crop_0000001.png'
 	img_proc = process_img_vistranet(img_path)
 
     # Instantiate the model:
-	model = build_model(pretrained_weights='models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth', img_size=224, num_cls=6, quantized=True)
-    # Load the checkpoint:
-    
-    # Choose which checkpoint/model you want to load from the table above:
-	cp_name = 'models\checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ResNet50_hta.pth'
-	cp = torch.load(cp_name)
-    # model = DaclNet(base_name=cp['base'], resolution = cp['resolution'], hidden_layers=cp['hidden_layers'], 
-	# 			num_class=cp['num_class'])
-    # model.load_state_dict(cp['state_dict']) # Load the pre-trained weights into the model
-	
+	model, cat_to_name = build_vistra(cp_path='checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_MobileNetV3-Large_hta.pth')
+
 	model.eval()
 	with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
-		preds = model(img_proc)
-		# preds = torch.sigmoid(logits).float().squeeze(0) # Nur bei DaclNet notwendig
+		logits = model(img_proc)
+		preds = torch.sigmoid(logits).float().squeeze(0) 
 	
 	# Make a dict with the predictions:
-	cat_to_name = {0:'NoDamage', 1: 'Crack', 2:'Spalling', 3:'Efflorescence', 4:'BarsExposed', 5:'Rust'}
 	preds = preds.flatten()
-	preds_dict = {v:round(preds[int(k)].item(),3) for k,v in cat_to_name.items()}
+	preds_dict = {v:round(preds[int(k)].item(),4) for k,v in cat_to_name.items()}
 	print(preds_dict)
     # View the classified image and it's predictions:
-	# view_classify(img_path, preds_dict)
-	# logits = logits.flatten()
-    # Apply sigmoid activation to get predictions:
-    # preds = torch.sigmoid(logits).float().squeeze(0).to('cpu')
-    
-    # labels_list =  ['NoDamage' , 'Crack', 'Spalling', 'Efflorescence', 'BarsExposed', 'Rust']
-    # make_predictions(model, "../assets/ExImg.jpg", labels= labels_list)
+	view_classify(img_path, preds_dict)

@@ -1,5 +1,5 @@
 """
-All by Sofia who submitted via https://dacl.ai/.
+All code is by Sofia who submitted via https://dacl.ai/.
 https://github.com/mpaques269546/codebrim_challenge
 """
 
@@ -428,11 +428,11 @@ class Ensemble(nn.Module):
 
 
 
-def build_vistra(cp, img_size=224, num_cls=6, quantized=True):
+def build_vistra(cp_path, img_size=224, num_cls=6, quantized=True, activation=None):
     if quantized:
         weights_encoder_decoder = ''
     else:
-        weights_encoder_decoder = cp
+        weights_encoder_decoder = cp_path
 
     encoder = build_encoder(weights_encoder_decoder, arch='vit_small',  key='encoder', image_size=img_size)
     n_last_blocks = 4
@@ -440,9 +440,11 @@ def build_vistra(cp, img_size=224, num_cls=6, quantized=True):
     embed_dim = encoder.embed_dim * (n_last_blocks + int(avgpool_patchtokens))
 
     decoder = build_decoder(weights_encoder_decoder, key='decoder', num_cls=num_cls, 
-                            embed_dim=embed_dim, image_size=img_size, activation=nn.Sigmoid()) 
+                            embed_dim=embed_dim, image_size=img_size, activation=None) # Activation in decoder: nn.Sigmoid()
 
     model = Ensemble(encoder, decoder,n_last_blocks= n_last_blocks, avgpool_patchtokens=avgpool_patchtokens)
+
+    cat_to_name = None
    
     if quantized:
         print('quantization')
@@ -450,12 +452,36 @@ def build_vistra(cp, img_size=224, num_cls=6, quantized=True):
                                                             torch.nn.Dropout, torch.nn.GELU,
                                                             torch.nn.ReLU, torch.nn.LayerNorm}, 
                                                             dtype=torch.qint8)
-        state_dict = torch.load(cp, map_location="cpu")
+        
+        cp = torch.load(cp_path, map_location="cpu")
         #print('state dict:', state_dict.keys())
-        msg = model.load_state_dict(state_dict, strict=False)
-        print('Pretrained weights found at {} and loaded with msg: {}'.format(cp, msg))
-    return model
+        msg = model.load_state_dict(cp['state_dict'], strict=False)
+        model_summary = 'The model was instantiated from {} and loaded with msg: {} with the following arguments:\n'.format(cp_path, msg)
+        for key, value in cp.items():
+            if key != 'state_dict':
+                model_summary += f"{key}: {value}\n"
+        print('=====Model summary=====')
+        print(model_summary)
+        cat_to_name = cp['cat_to_name']
+    return model, cat_to_name
 
 
 if __name__ == '__main__':
-    model = build_vistra(cp= 'checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')
+    # Quick check
+    model = build_vistra(cp_path= 'checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')
+
+
+    # cp_path = 'checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth'
+    # cp = {}
+    # cp['state_dict'] = torch.load(cp_path, map_location="cpu")
+    # cp['dateset'] = 'codebrim-classif-balanced'
+    # cp['img_size'] = 224
+    # cp['num_class'] = 6
+    # cp['cat_to_name'] = {0:'NoDamage', 1: 'Crack', 2:'Spalling', 3:'Efflorescence', 4:'BarsExposed', 5:'Rust'}
+
+    # model_summary = 'The model was instantiated from {} with the following arguments:\n'.format(cp_path)
+    # for key, value in cp.items():
+    #     if key != 'state_dict':
+    #         model_summary += f"{key}: {value}\n"
+    # print(model_summary)
+    # torch.save(cp, ('codebrim-classif-balanced_ViT_s8_backup_manipulated.pth'))   
