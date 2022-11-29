@@ -140,11 +140,11 @@ if __name__ == '__main__':
     # View the classified image and it's predictions:
 	view_classify(img_path, preds_dict)
 
-	# for cp_path in glob.glob('./models/checkpoints/codebrim-classif-balanced/*ViT_s8.pth'):
+	# for cp_path in glob.glob('./models/checkpoints/codebrim-classif-balanced/*EfficientNetV1-B0_hta.pth'):
 	# 	if cp_path.endswith(".pth"):	
 	# 		print(cp_path)
 	# 		cp_name = Path(cp_path).stem
-	# 		model, cat_to_name = build_vistra(cp_path=cp_path)
+	# 		model, cat_to_name = build_dacl(cp_path=cp_path)
 	# 		model.eval()
 	# 		example = torch.rand(1, 3, 224, 224)
 	# 		traced_script_module = torch.jit.trace(model, example)	
