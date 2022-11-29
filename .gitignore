@@ -1,7 +1,7 @@
 # MyIgnores
-# .ipynb_checkpoints
-# __pycache__
-# *.vscode
+.ipynb_checkpoints
+__pycache__
+*.vscode
 
 *.ods
 /input/*
