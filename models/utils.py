@@ -2,6 +2,7 @@
 Utils to make prediction with models
 '''
 import os
+import glob
 
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -126,7 +127,7 @@ if __name__ == '__main__':
 	img_proc = process_img_vistranet(img_path)
 
     # Instantiate the model:
-	model, cat_to_name = build_vistra(cp_path='checkpoints\codebrim-classif-balanced\codebrim-classif-balanced_ViT_s8.pth')
+	model, cat_to_name = build_dacl(cp_path='models\checkpoints\meta4+dacl1k\meta4+dacl1k_MobileNetV3-Large_hta.pth')
 
 	model.eval()
 	with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
@@ -139,6 +140,12 @@ if __name__ == '__main__':
     # View the classified image and it's predictions:
 	view_classify(img_path, preds_dict)
 
-	# model, cat_to_name = build_dacl(cp_path='models/input/codebrim-classif_MobileNetV3-Large_hta.pth')
-	# model_scripted = torch.jit.script(model)
-	# model_scripted.save('models\jit_models\codebrim-classif_MobileNetV3-Large_hta.pt')
+	# for cp_path in glob.glob('./models/checkpoints/codebrim-classif-balanced/*ViT_s8.pth'):
+	# 	if cp_path.endswith(".pth"):	
+	# 		print(cp_path)
+	# 		cp_name = Path(cp_path).stem
+	# 		model, cat_to_name = build_vistra(cp_path=cp_path)
+	# 		model.eval()
+	# 		example = torch.rand(1, 3, 224, 224)
+	# 		traced_script_module = torch.jit.trace(model, example)	
+	# 		traced_script_module.save(Path("models/jit_models") / (cp_name+'.pt'))

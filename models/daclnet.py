@@ -62,7 +62,7 @@ class DaclNet(nn.Module):
             self.activation = nn.ELU() 
 
         elif self.base_name == 'efficientnet':      
-            if imgnet_pt:
+            if not imgnet_pt:
                 print('You try to use efficientnet without pretrained weights from ImageNet. This is not implemented. Weights from ImageNet will be loaded anyway, sry!')
             for ver in efnet_dict:
                 if efnet_dict[ver] == self.resolution:
