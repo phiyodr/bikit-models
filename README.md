@@ -3,6 +3,60 @@
 
 Please visit [Building Inspection Toolkit](https://github.com/phiyodr/building-inspection-toolkit/) for all details on how to use these models 
 
+
+## New Usage daclnets
+
+```python 
+from bikitmodels.models.utils import process_img_daclnet, view_classify
+from bikitmodels.models.daclnet import build_dacl
+
+# Preprocess image
+img_proc = utils.process_img_daclnet(img_path)
+
+# Instantiate the model:
+model, cat_to_name = build_dacl(cp_path= './models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_MobileNetV3-Large_hta.pth')
+
+model.eval()
+with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
+    logits = model(img_proc)
+    preds = torch.sigmoid(logits).float().squeeze(0)
+
+# Make a dict with the predictions:
+preds_dict = {v:round(preds[int(k)].item(),4) for k,v in cat_to_name.items()}
+print('*'*10, 'Output', '*'*10)
+for k,v in preds_dict.items():
+    print('%s: %.2f%%' % (k,v*100)) 
+# View the classified image and it's predictions:
+utils.view_classify(img_path, preds_dict)
+
+```
+
+## New Usage vistranet
+```python 
+from bikitmodels.models.utils import process_img_vistranet, view_classify
+from bikitmodels.models.vistranet import build_vistra
+
+# Preprocess image
+img_proc = utils.process_img_vistranet(img_path)
+
+# Instantiate the model:
+model, cat_to_name = build_vistra(cp_path='./models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8.pth')
+
+model.eval()
+with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
+    logits = model(img_proc)
+    preds = torch.sigmoid(logits).float().squeeze(0)
+
+# Make a dict with the predictions:
+preds_dict = {v:round(preds[int(k)].item(),4) for k,v in cat_to_name.items()}
+print('*'*10, 'Output', '*'*10)
+for k,v in preds_dict.items():
+    print('%s: %.2f%%' % (k,v*100)) 
+# View the classified image and it's predictions:
+utils.view_classify(img_path, preds_dict)
+```
+
+## Old Usage
 ```python
 from bikit.utils import load_model, load_img_from_url
 from bikit.models import make_prediction
@@ -32,4 +86,4 @@ prob, pred = make_prediction(model, img, metadata, print_predictions=True, prepr
 | dacl1k_MobileNetV3-Large_hta.pth                    | dacl1k                    | 23.29               | 56.94  | 75.72         | 46.95      | 76.18        | 82.58     | 65.22               | 22.5             | 43.18                    | 44.44               | 35.85                  | 70.54           |             |           |
 | meta2+dacl1k_MobileNetV3-Large_hta.pth              | meta2+dacl1k              | 49.22               | 66.48  | 72.17         | 66.48      | 85.45        | 89.27     | 32.35               | 83.13            | 61.8                     | 78.33               | 65.02                  | 78.26           |             |           |
 
-** The perfromance of the models trained on codebrim-classif-balanced dataset inseide the bikit-models repo differ from the original bikit paper due to sanity changes in bikit. The original models from the paper can be found in [dacl-demo](https://github.com/jfltzngr/dacl-demo) repo.
+** The perfromance of the models trained on codebrim-classif-balanced dataset in the bikit-models repo differ from the original bikit paper due to sanity changes in bikit. The original models from the paper can be found at [dacl-demo](https://github.com/jfltzngr/dacl-demo) repo.
