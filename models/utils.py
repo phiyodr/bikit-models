@@ -120,7 +120,7 @@ if __name__ == '__main__':
 	'''
 	Quick test
 	'''
-	from vistranet import build_vistra
+	from models.vistranet_0 import build_vistra
 	from daclnet import build_dacl
 
 	img_path = 'assets\image_0000468_crop_0000001.png'
