@@ -3,6 +3,8 @@ Utils to make prediction with models
 '''
 import os
 import glob
+import sys
+import time
 
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -115,30 +117,96 @@ def view_classify(img_path, result_dict):
 
 	plt.tight_layout()
 
+def preprocess_img(img):
+    if isinstance(img, str):
+        img = Image.open(img)
+    img = img.resize((224,224))
+    img_np = np.array(img)
+
+    img_np = (img_np / 255 - [0.485, 0.456, 0.406]) / [0.229, 0.224, 0.225]
+    img_np = img_np.transpose(2, 0, 1)
+    img = torch.from_numpy(img_np)
+    img = img.unsqueeze_(0)
+    img = img.type(torch.FloatTensor)
+    return img
+
+
+def _print_prediction_bar(prediction_probability, label):
+    assert (prediction_probability>=0.0) and (prediction_probability<=1.0)
+    bar_size = 40
+    bar = '█' * int(bar_size * prediction_probability)
+    bar = bar + '' * int(bar_size * (1-prediction_probability))
+
+    sys.stdout.write(f"{label.ljust(20)} [{bar:{bar_size}s}] {prediction_probability*100:>6.2f}% \n")
+    sys.stdout.flush()
+
+def make_prediciton(model, img, cat_to_name, print_predictions=True, preprocess_image=False, activation=True):
+	# Read image if it is a string
+    if isinstance(img, str):
+        img = Image.open(img_path)
+    # Preprocess image
+    if preprocess_image:
+        img = preprocess_img(img)
+
+    model.eval()
+    tic = time.perf_counter()
+    with torch.no_grad():
+        logits = model(img)
+    probabilities = torch.sigmoid(logits).numpy()[0] if activation else logits.numpy()[0]
+    predictions = probabilities > 0.5
+    toc = time.perf_counter()
+
+    if print_predictions:
+        n_classes = len(cat_to_name)
+        for i in range(n_classes):
+            label_name = cat_to_name[i]
+            _print_prediction_bar(probabilities[i], label_name)
+        print(f"Inference time (CPU): {(toc - tic)*1000:0.2f} ms")
+
+
 
 if __name__ == '__main__':
 	'''
 	Quick test
 	'''
-	from models.vistranet_0 import build_vistra
 	from daclnet import build_dacl
+	img_path = "assets/image_0000468_crop_0000001.png"
+	cp_path = "models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ResNet50_hta.pth"
+	model, cat_to_name = build_dacl(cp_path=cp_path)
+	img = process_img_daclnet(img_path)
+	make_prediciton(model, img, cat_to_name)
 
-	img_path = 'assets\image_0000468_crop_0000001.png'
-	img_proc = process_img_vistranet(img_path)
+	# from vistranet_0 import build_vistra_0
+	# img_path = "assets/image_0000468_crop_0000001.png"
+	# cp_path = "models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_0.pth"
+	# model, cat_to_name = build_vistra_0(cp_path=cp_path)
+	# img = process_img_vistranet(img_path)
+	# make_prediciton(model, img, cat_to_name)
 
-    # Instantiate the model:
-	model, cat_to_name = build_dacl(cp_path='models\checkpoints\meta4+dacl1k\meta4+dacl1k_MobileNetV3-Large_hta.pth')
+	# from vistranet_1 import build_vistra_1
+	# img_path = "assets/image_0000468_crop_0000001.png"
+	# cp_path = "models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_1.pth"
+	# model, cat_to_name = build_vistra_1(cp_path=cp_path)
+	# img = process_img_vistranet(img_path)
+	# make_prediciton(model, img, cat_to_name, activation=False) # activation is already performed 
 
-	model.eval()
-	with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
-		logits = model(img_proc)
-		preds = torch.sigmoid(logits).float().squeeze(0) 
+
+	# from models.vistranet_0 import build_vistra
+	# from daclnet import build_dacl
+	# img_path = 'assets\image_0000468_crop_0000001.png'
+	# img_proc = process_img_vistranet(img_path)
+    # # Instantiate the model:
+	# model, cat_to_name = build_dacl(cp_path='models\checkpoints\meta4+dacl1k\meta4+dacl1k_MobileNetV3-Large_hta.pth')
+	# model.eval()
+	# with torch.no_grad(): # Disable tracking of gradients in autograd (saves some time)
+	# 	logits = model(img_proc)
+	# 	preds = torch.sigmoid(logits).float().squeeze(0) 
 	
-	# Make a dict with the predictions:
-	preds_dict = {v:round(preds[int(k)].item(),4) for k,v in cat_to_name.items()}
-	print(preds_dict)
-    # View the classified image and it's predictions:
-	view_classify(img_path, preds_dict)
+	# # Make a dict with the predictions:
+	# preds_dict = {v:round(preds[int(k)].item(),4) for k,v in cat_to_name.items()}
+	# print(preds_dict)
+    # # View the classified image and it's predictions:
+	# view_classify(img_path, preds_dict)
 
 	# for cp_path in glob.glob('./models/checkpoints/codebrim-classif-balanced/*EfficientNetV1-B0_hta.pth'):
 	# 	if cp_path.endswith(".pth"):	

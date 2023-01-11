@@ -165,8 +165,8 @@ def build_dacl(device='cpu', freeze_base=True, **kwargs):
     Keyword Args:
         cp_path (str): path to a pytorch checkpoint which has to originate from a dacl model
         base (str): name of the base. Select from ['resnet', 'mobilenet', 'efficientnet', 'mobilenetv2'] 
-        resolution (str): description
-        hidden_layers (list of int): e.g. [512, 256, 128]
+        resolution (int): resolution of input img
+        hidden_layers (list of int): constellation of hidden layers and their nodes, e.g. [512, 256, 128]
         num_class (int): number of classes to predict	
         drop_prob (float): dropout probability applied for each hidden layer
         imgnet_pt (bool): Load pretrained weights from ImageNet

@@ -1,0 +1,6 @@
+torch
+torchvision
+jupyter
+pillow 
+matplotlib
+efficientnet-pytorch

@@ -428,7 +428,7 @@ class Ensemble(nn.Module):
 
 
 
-def build_vistra(cp_path, img_size=224, num_cls=6, quantized=True, activation=None):
+def build_vistra_0(cp_path, img_size=224, num_cls=6, quantized=True, activation=None):
     if quantized:
         weights_encoder_decoder = ''
     else:
@@ -443,8 +443,6 @@ def build_vistra(cp_path, img_size=224, num_cls=6, quantized=True, activation=No
                             embed_dim=embed_dim, image_size=img_size, activation=None) # Activation in decoder: nn.Sigmoid()
 
     model = Ensemble(encoder, decoder,n_last_blocks= n_last_blocks, avgpool_patchtokens=avgpool_patchtokens)
-
-    cat_to_name = None
    
     if quantized:
         print('quantization')
@@ -468,22 +466,7 @@ def build_vistra(cp_path, img_size=224, num_cls=6, quantized=True, activation=No
 
 if __name__ == '__main__':
     # Quick check
-    model, cat_to_name = build_vistra(cp_path= 'models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_manipulated.pth')
-
-    # cp_path = 'models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_1.pth'
-    # cp = {}
-    # cp['state_dict'] = torch.load(cp_path, map_location="cpu")
-    # cp['dataset'] = 'codebrim-classif-balanced'
-    # cp['img_size'] = 224
-    # cp['num_class'] = 6
-    # cp['cat_to_name'] = {0:'NoDamage', 1:'Crack', 2:'Spalling', 3:'Efflorescence', 4:'BarsExposed', 5:'Rust'}
-
-    # model_summary = 'The model was instantiated from {} with the following arguments:\n'.format(cp_path)
-    # for key, value in cp.items():
-    #     if key != 'state_dict':
-    #         model_summary += f"{key}: {value}\n"
-    # print(model_summary)
-    # torch.save(cp, ('models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_manipulated.pth'))   
+    model, cat_to_name = build_vistra_0(cp_path= 'models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_0.pth')
 
     # cp_path = 'models/checkpoints/codebrim-classif-balanced/codebrim-classif-balanced_ViT_s8_0.pth'
     # cp = torch.load(cp_path, map_location="cpu")
