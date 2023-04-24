@@ -1,0 +1,6 @@
+torch
+torchvision
+Pillow
+pathlib
+matplotlib
+efficientnet_pytorch

@@ -11,7 +11,7 @@ efnet_dict = {'b0': 224, 'b1': 240, 'b2': 260, 'b3': 300,
              }
 
 class DaclNet(nn.Module):
-    def __init__(self, base_name, resolution, hidden_layers, num_class, drop_prob=0.2, imgnet_pt = False, freeze_base=True):
+    def __init__(self, base_name, resolution, hidden_layers, num_class, drop_prob=0.2, imgnet_pt = None, freeze_base=True):
         ''' 
         Builds a network separated into a base model and classifier with arbitrary hidden layers.
         
@@ -39,9 +39,10 @@ class DaclNet(nn.Module):
         self.resolution = resolution
         self.hidden_layers = hidden_layers
         self.freeze_base = freeze_base
+        self.imgnet_pt = 'IMAGENET1K_V1' if not imgnet_pt is None else None
 
         if self.base_name == 'mobilenet':
-            base = models.mobilenet_v3_large(pretrained=imgnet_pt) 
+            base = models.mobilenet_v3_large(weights=self.imgnet_pt) 
             modules = list(base.children())[:-1] 
             self.base = nn.Sequential(*modules)
             # for pytorch model:
@@ -52,7 +53,7 @@ class DaclNet(nn.Module):
             self.activation = nn.Hardswish()
 
         elif self.base_name == 'resnet':
-            base = models.resnet50(pretrained=imgnet_pt) 
+            base = models.resnet50(weights=self.imgnet_pt) 
             modules = list(base.children())[:-1]
             self.base = nn.Sequential(*modules)
             if self.hidden_layers:
@@ -62,7 +63,7 @@ class DaclNet(nn.Module):
             self.activation = nn.ELU() 
 
         elif self.base_name == 'efficientnet':      
-            if not imgnet_pt:
+            if imgnet_pt is None:
                 print('You try to use efficientnet without pretrained weights from ImageNet. This is not implemented. Weights from ImageNet will be loaded anyway, sry!')
             for ver in efnet_dict:
                 if efnet_dict[ver] == self.resolution:
@@ -76,7 +77,7 @@ class DaclNet(nn.Module):
             self.activation = MemoryEfficientSwish()
             
         elif self.base_name == 'mobilenetv2':
-            base = models.mobilenet.mobilenet_v2(pretrained=True)
+            base = models.mobilenet.mobilenet_v2(weights=self.imgnet_pt)
             modules = list(base.children())[:-1]
             self.base = nn.Sequential(*modules)
             if hidden_layers:
@@ -194,4 +195,4 @@ def build_dacl(device='cpu', freeze_base=True, **kwargs):
 
 if __name__ == '__main__':
     # Quick check
-    model = build_dacl(cp_path = 'models\checkpoints\codebrim-classif\codebrim-classif_MobileNetV3-Large_hta.pth')
+    model = build_dacl(cp_path = 'models/checkpoints/meta2+dacl1k/meta2+dacl1k_MobileNetV3-Large_dhb.pth')
